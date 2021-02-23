@@ -8,16 +8,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ServerManager extends Thread {
+public class ServerManager {
     private Map<String, Socket> servers = new HashMap<>();
-    private ServerSocket serverSocket;
-    public ServerManager(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
-    }
+
     public Set<String> getServerNames() {
         synchronized (servers) {
             return servers.keySet();
         }
+    }
+    public boolean addServer(String serverName, Socket socket) {
+        synchronized (servers) {
+            servers.put(serverName, socket);
+        }
+        return  true;
     }
     public boolean informServer(String serverName, int port) {
         synchronized (servers) {
@@ -34,9 +37,6 @@ public class ServerManager extends Thread {
             return false;
         }
     }
-    @Override
-    public void run() {
-        while ()
-    }
+
 
 }

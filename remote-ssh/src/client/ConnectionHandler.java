@@ -32,7 +32,7 @@ public class ConnectionHandler extends Thread {
             if (line.startsWith("/")) {
                 return line;
             } else {
-                return this.contextPath + line;
+                return this.contextPath + "/" + line;
             }
         }
     }
@@ -42,12 +42,15 @@ public class ConnectionHandler extends Thread {
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
+                System.out.println("received instruction : " + line);
                 line = line.trim();
                 if (line.length() == 0) {
                     continue;
                 }
                 if (line.startsWith("cd")) {
                     this.contextPath = changePath(line);
+                    writer.println("changed context path to " + this.contextPath);
+                    writer.flush();
                 } else {
                     template[2] = line;
                     ProcessBuilder processBuilder = new ProcessBuilder(Arrays.asList(template));
@@ -66,8 +69,8 @@ public class ConnectionHandler extends Thread {
                             try {
                                 while ((outputLine = processReader.readLine()) != null) {
                                     writer.println(outputLine);
+                                    writer.flush();
                                 }
-                                writer.flush();
                             } catch (IOException e) {
 
                             }
@@ -78,9 +81,9 @@ public class ConnectionHandler extends Thread {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    writer.print(contextPath + prompt);
-                    writer.flush();
                 }
+                writer.print(contextPath + prompt);
+                writer.flush();
             }
         } catch (IOException e) {
 
