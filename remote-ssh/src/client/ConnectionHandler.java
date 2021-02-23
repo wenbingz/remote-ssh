@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ConnectionHandler extends Thread {
     private Socket socket;
@@ -53,18 +54,21 @@ public class ConnectionHandler extends Thread {
                     writer.flush();
                 } else {
                     template[2] = line;
-                    ProcessBuilder processBuilder = new ProcessBuilder(Arrays.asList(template));
-                    processBuilder.redirectErrorStream();
+                    ProcessBuilder processBuilder = new ProcessBuilder(Arrays.asList(template)).redirectErrorStream(true);
+                    System.out.println("prepare");
                     for (Map.Entry<String, String> entry : envp.entrySet()) {
                         processBuilder.environment().put(entry.getKey(), entry.getValue());
                     }
                     processBuilder.directory(new File(contextPath));
+                    System.out.println("prepared");
                     Process process = processBuilder.start();
-                    new Thread() {
+                    System.out.println("started");
+                    BufferedReader processReader =
+                            new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+                    Thread readThread = new Thread() {
                         @Override
                         public void run() {
-                            BufferedReader processReader =
-                                    new BufferedReader(new InputStreamReader(process.getInputStream()));
                             String outputLine = null;
                             try {
                                 while ((outputLine = processReader.readLine()) != null) {
@@ -72,20 +76,24 @@ public class ConnectionHandler extends Thread {
                                     writer.flush();
                                 }
                             } catch (IOException e) {
-
+                                e.printStackTrace();
                             }
                         }
-                    }.start();
+                    };
+
+                    readThread.start();
                     try {
-                        process.waitFor();
+                        System.out.println("before wait");
+                        process.waitFor(5, TimeUnit.SECONDS);
+                        System.out.println("after wait");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
                 writer.print(contextPath + prompt);
                 writer.flush();
-            }
-        } catch (IOException e) {
+        }
+    } catch (IOException e) {
 
         } finally {
             try {
