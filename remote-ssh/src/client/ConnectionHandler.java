@@ -33,7 +33,11 @@ public class ConnectionHandler extends Thread {
             if (line.startsWith("/")) {
                 return line;
             } else {
-                return this.contextPath + "/" + line;
+                if (this.contextPath.equals("/")) {
+                    return this.contextPath + line;
+                } else {
+                    return this.contextPath + "/" + line;
+                }
             }
         }
     }
@@ -84,13 +88,13 @@ public class ConnectionHandler extends Thread {
                     readThread.start();
                     try {
                         System.out.println("before wait");
-                        process.waitFor(5, TimeUnit.SECONDS);
+                        process.waitFor(10000, TimeUnit.SECONDS);
                         System.out.println("after wait");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                writer.print(contextPath + prompt);
+                writer.println(contextPath + prompt);
                 writer.flush();
         }
     } catch (IOException e) {
