@@ -6,9 +6,9 @@ import java.net.Socket;
 
 public class Driver {
 
-    private final static String relayIP = "localhost";
+    private final static String relayIP = "wenbing.space";
     private final static int port = 23445;
-    private final static String identifier = "guiyang thinkpad";
+    private final static String identifier = "my macbook";
     private final static long retrySeconds = 5;
     private static BufferedReader reader = null;
     private static PrintWriter writer = null;

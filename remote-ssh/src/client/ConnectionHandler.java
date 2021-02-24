@@ -14,6 +14,7 @@ public class ConnectionHandler extends Thread {
     private PrintWriter writer;
     private final static String prompt = " >>> ";
     private String[] template = {"/bin/sh", "-c", ""};
+    //private String[] template = {"CMD", "/C", ""}; // for Windows
     private Map<String, String> envp = new HashMap<>();
     public ConnectionHandler(Socket socket) {
         this.socket = socket;

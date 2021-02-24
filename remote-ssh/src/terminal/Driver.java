@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Driver {
-    private final static String relayIP = "localhost";
+    private final static String relayIP = "wenbing.space";
     private final static int port = 23446;
     private static Socket terminalSocket;
     private static PrintWriter writer;
